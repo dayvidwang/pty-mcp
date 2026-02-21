@@ -15,7 +15,7 @@ Built for AI agents that need to interact with TUI applications, run commands in
 ## How it works
 
 ```
-bun-pty (spawn process in a real PTY)
+bun-pty / node-pty (spawn process in a real PTY)
   → @xterm/headless (parse escape sequences into virtual screen buffer)
   → @napi-rs/canvas (render cell grid to PNG)
   → MCP server (expose as tools over stdio)
@@ -37,16 +37,28 @@ Programs see a real terminal (colors, cursor movement, alternate screen, mouse s
 
 ## Install
 
-Requires [Bun](https://bun.sh) (v1.0+).
+Works with [Bun](https://bun.sh) (v1.0+) or [Node.js](https://nodejs.org) (v18+).
+
+**Bun:**
 
 ```bash
 bunx pty-mcp
 ```
 
+**Node.js:**
+
+```bash
+npx pty-mcp
+```
+
 Or install globally:
 
 ```bash
+# Bun
 bun install -g pty-mcp
+
+# Node.js
+npm install -g pty-mcp
 ```
 
 ## Usage
@@ -69,10 +81,10 @@ Add to your MCP client config (e.g. Claude Desktop, Cursor, etc.):
 ### Development
 
 ```bash
-git clone https://github.com/youruser/terminal-mcp
-cd terminal-mcp
-bun install
-bun run dev
+git clone https://github.com/dayvidwang/pty-mcp
+cd pty-mcp
+bun install   # or: npm install
+bun run dev   # or: npm run start:node
 ```
 
 ### Example interaction
@@ -93,7 +105,7 @@ An AI agent can use the tools to interact with any terminal application:
 
 | Layer | Package |
 |-------|---------|
-| PTY | [bun-pty](https://github.com/nicolo-ribaudo/bun-pty) |
+| PTY | [bun-pty](https://github.com/nicolo-ribaudo/bun-pty) (Bun) / [node-pty](https://github.com/nickolasburr/node-pty) (Node.js) |
 | Terminal emulation | [@xterm/headless](https://www.npmjs.com/package/@xterm/headless) |
 | PNG rendering | [@napi-rs/canvas](https://github.com/nicolo-ribaudo/napi-rs-canvas) |
 | HTML serialization | [@xterm/addon-serialize](https://www.npmjs.com/package/@xterm/addon-serialize) |

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, test, expect } from "vitest"
 import { renderToPng } from "./renderer"
 import type { CellInfo } from "./terminal"
 

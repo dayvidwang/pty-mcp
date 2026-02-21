@@ -1,5 +1,6 @@
-import { describe, test, expect, afterEach } from "bun:test"
+import { describe, test, expect, afterEach } from "vitest"
 import { HeadlessTerminal } from "./terminal"
+import { sleep } from "./runtime"
 
 let terminals: HeadlessTerminal[] = []
 
@@ -31,7 +32,7 @@ describe("HeadlessTerminal", () => {
 
   test("spawns a process and captures output", async () => {
     const term = createTerminal({ cols: 80, rows: 24 })
-    term.spawn({ shell: "/bin/echo", args: ["hello world"] })
+    await term.spawn({ shell: "/bin/echo", args: ["hello world"] })
 
     await term.waitForExit()
     await term.flush()
@@ -42,7 +43,7 @@ describe("HeadlessTerminal", () => {
 
   test("reports exit status", async () => {
     const term = createTerminal()
-    term.spawn({ shell: "/bin/sh", args: ["-c", "exit 42"] })
+    await term.spawn({ shell: "/bin/sh", args: ["-c", "exit 42"] })
 
     const code = await term.waitForExit()
     expect(code).toBe(42)
@@ -58,11 +59,11 @@ describe("HeadlessTerminal", () => {
 
   test("write sends data to the process", async () => {
     const term = createTerminal({ cols: 80, rows: 24 })
-    term.spawn({ shell: "/bin/cat" })
-    await Bun.sleep(100)
+    await term.spawn({ shell: "/bin/cat" })
+    await sleep(100)
 
     term.write("test input\n")
-    await Bun.sleep(200)
+    await sleep(200)
     await term.flush()
 
     const text = term.getText()
@@ -81,7 +82,7 @@ describe("HeadlessTerminal", () => {
 
   test("getText returns screen content line by line", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
-    term.spawn({ shell: "/bin/sh", args: ["-c", "echo line1; echo line2; echo line3"] })
+    await term.spawn({ shell: "/bin/sh", args: ["-c", "echo line1; echo line2; echo line3"] })
 
     await term.waitForExit()
     await term.flush()
@@ -95,7 +96,7 @@ describe("HeadlessTerminal", () => {
   test("getCellGrid returns grid matching terminal dimensions", async () => {
     const cols = 40, rows = 10
     const term = createTerminal({ cols, rows })
-    term.spawn({ shell: "/bin/echo", args: ["hi"] })
+    await term.spawn({ shell: "/bin/echo", args: ["hi"] })
 
     await term.waitForExit()
     await term.flush()
@@ -109,7 +110,7 @@ describe("HeadlessTerminal", () => {
 
   test("getCellGrid captures character content", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
-    term.spawn({ shell: "/bin/echo", args: ["ABC"] })
+    await term.spawn({ shell: "/bin/echo", args: ["ABC"] })
 
     await term.waitForExit()
     await term.flush()
@@ -121,7 +122,7 @@ describe("HeadlessTerminal", () => {
 
   test("getCellGrid cells have color properties", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
-    term.spawn({ shell: "/bin/echo", args: ["test"] })
+    await term.spawn({ shell: "/bin/echo", args: ["test"] })
 
     await term.waitForExit()
     await term.flush()
@@ -143,7 +144,7 @@ describe("HeadlessTerminal", () => {
   test("captures ANSI color codes", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
     // Red text: \033[31m
-    term.spawn({ shell: "/bin/sh", args: ["-c", "printf '\\033[31mRED\\033[0m'"] })
+    await term.spawn({ shell: "/bin/sh", args: ["-c", "printf '\\033[31mRED\\033[0m'"] })
 
     await term.waitForExit()
     await term.flush()
@@ -156,11 +157,11 @@ describe("HeadlessTerminal", () => {
 
   test("resize does not throw", async () => {
     const term = createTerminal({ cols: 80, rows: 24 })
-    term.spawn({ shell: "/bin/cat" })
-    await Bun.sleep(100)
+    await term.spawn({ shell: "/bin/cat" })
+    await sleep(100)
 
     expect(() => term.resize(120, 40)).not.toThrow()
-    await Bun.sleep(100)
+    await sleep(100)
     await term.flush()
 
     // getCellGrid uses the original constructor dimensions
@@ -171,7 +172,7 @@ describe("HeadlessTerminal", () => {
 
   test("getHTML returns HTML string", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
-    term.spawn({ shell: "/bin/echo", args: ["hello"] })
+    await term.spawn({ shell: "/bin/echo", args: ["hello"] })
 
     await term.waitForExit()
     await term.flush()
@@ -183,7 +184,7 @@ describe("HeadlessTerminal", () => {
 
   test("getCursorPosition returns coordinates", async () => {
     const term = createTerminal({ cols: 40, rows: 5 })
-    term.spawn({ shell: "/bin/echo", args: ["hi"] })
+    await term.spawn({ shell: "/bin/echo", args: ["hi"] })
 
     await term.waitForExit()
     await term.flush()
@@ -199,8 +200,8 @@ describe("HeadlessTerminal", () => {
     const t1 = createTerminal({ cols: 40, rows: 5 })
     const t2 = createTerminal({ cols: 40, rows: 5 })
 
-    t1.spawn({ shell: "/bin/echo", args: ["session-one"] })
-    t2.spawn({ shell: "/bin/echo", args: ["session-two"] })
+    await t1.spawn({ shell: "/bin/echo", args: ["session-one"] })
+    await t2.spawn({ shell: "/bin/echo", args: ["session-two"] })
 
     await Promise.all([t1.waitForExit(), t2.waitForExit()])
     await t1.flush()

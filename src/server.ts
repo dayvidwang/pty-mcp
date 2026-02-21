@@ -1,9 +1,10 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod"
 import { HeadlessTerminal } from "./terminal"
 import { renderToPng } from "./renderer"
+import { sleep } from "./runtime"
 
 // Session management: map of session IDs to terminal instances
 const sessions = new Map<string, HeadlessTerminal>()
@@ -43,11 +44,11 @@ server.tool(
       cwd,
       env,
     })
-    terminal.spawn({ shell, args, cwd, env })
+    await terminal.spawn({ shell, args, cwd, env })
     sessions.set(id, terminal)
 
     // Give shell a moment to initialize
-    await Bun.sleep(200)
+    await sleep(200)
     await terminal.flush()
 
     return {
@@ -86,7 +87,7 @@ server.tool(
     terminal.write(unescaped)
 
     // Wait for output to be processed
-    await Bun.sleep(100)
+    await sleep(100)
     await terminal.flush()
 
     return {
@@ -147,7 +148,7 @@ server.tool(
   async ({ sessionId, cols, rows }) => {
     const terminal = getSession(sessionId)
     terminal.resize(cols, rows)
-    await Bun.sleep(50)
+    await sleep(50)
     await terminal.flush()
 
     return {
@@ -201,7 +202,7 @@ server.tool(
   },
   async ({ sessionId, ms }) => {
     const terminal = getSession(sessionId)
-    await Bun.sleep(ms ?? 500)
+    await sleep(ms ?? 500)
     await terminal.flush()
 
     return {

@@ -1,6 +1,6 @@
 import { Terminal } from "@xterm/headless"
 import { SerializeAddon } from "@xterm/addon-serialize"
-import { spawn, type IPty } from "bun-pty"
+import { spawnPty, type PtyProcess } from "./pty"
 
 export interface TerminalOptions {
   cols?: number
@@ -8,7 +8,7 @@ export interface TerminalOptions {
   shell?: string
   args?: string[]
   cwd?: string
-  env?: Record<string, string>
+  env?: Record<string, string | undefined>
 }
 
 export interface CellInfo {
@@ -53,7 +53,7 @@ const PALETTE_256: string[] = (() => {
 export class HeadlessTerminal {
   private xterm: Terminal
   private serialize: SerializeAddon
-  private pty: IPty | null = null
+  private pty: PtyProcess | null = null
   private _exited = false
   private _exitCode: number | null = null
   private _exitPromise: Promise<number> | null = null
@@ -76,12 +76,12 @@ export class HeadlessTerminal {
     this.xterm.loadAddon(this.serialize)
   }
 
-  spawn(options: TerminalOptions = {}): void {
+  async spawn(options: TerminalOptions = {}): Promise<void> {
     const shell = options.shell ?? process.env.SHELL ?? "/bin/bash"
     const args = options.args ?? []
     const cwd = options.cwd ?? process.cwd()
 
-    this.pty = spawn(shell, args, {
+    this.pty = await spawnPty(shell, args, {
       name: "xterm-256color",
       cols: this.cols,
       rows: this.rows,
@@ -98,7 +98,7 @@ export class HeadlessTerminal {
     })
 
     this._exitPromise = new Promise<number>((resolve) => {
-      this.pty!.onExit(({ exitCode }: { exitCode: number }) => {
+      this.pty!.onExit(({ exitCode }) => {
         this._exited = true
         this._exitCode = exitCode
         resolve(exitCode)
