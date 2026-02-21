@@ -6,10 +6,12 @@
   "license": "MIT",
   "keywords": ["mcp", "terminal", "pty", "headless", "xterm", "model-context-protocol"],
   "bin": {
-    "pty-mcp": "src/server.ts"
+    "pty-mcp": "dist/server.js"
   },
-  "files": ["src/server.ts", "src/terminal.ts", "src/renderer.ts", "src/pty.ts", "src/runtime.ts", "assets/", "README.md"],
+  "files": ["dist/", "assets/", "README.md"],
   "scripts": {
+    "build": "tsc && echo '#!/usr/bin/env node' | cat - dist/server.js > dist/server.tmp && mv dist/server.tmp dist/server.js",
+    "prepublishOnly": "npm run build",
     "start": "bun src/server.ts",
     "start:node": "node --import tsx src/server.ts",
     "dev": "bun --watch src/server.ts",
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@types/bun": "^1.3.9",
     "tsx": "^4.19.0",
+    "typescript": "^5.9.3",
     "vitest": "^3.0.0"
   }
 }
