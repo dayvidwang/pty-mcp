@@ -1,0 +1,19 @@
+{
+  "name": "terminal-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/server.ts",
+    "dev": "bun --watch src/server.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@xterm/headless": "^6.0.0",
+    "@xterm/addon-serialize": "^0.14.0",
+    "@napi-rs/canvas": "^0.1.94",
+    "bun-pty": "^0.4.8",
+    "zod": "^3.25.0"
+  }
+}
