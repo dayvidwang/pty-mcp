@@ -5,7 +5,7 @@ An MCP server that provides headless terminal emulation. Spawn interactive termi
 Built for AI agents that need to interact with TUI applications, run commands in a real PTY, and visually inspect terminal output.
 
 <p align="center">
-  <img src="assets/claude-code.png" width="720" alt="Claude Code running in a headless terminal" />
+  <img src="assets/htop.png" width="720" alt="htop system monitor running in a headless terminal" />
 </p>
 
 <p align="center">
