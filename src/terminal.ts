@@ -1,6 +1,8 @@
-import { Terminal } from "@xterm/headless"
-import { SerializeAddon } from "@xterm/addon-serialize"
-import { spawnPty, type PtyProcess } from "./pty"
+import pkg from "@xterm/headless"
+const { Terminal } = pkg
+import serializePkg from "@xterm/addon-serialize"
+const { SerializeAddon } = serializePkg
+import { spawnPty, type PtyProcess } from "./pty.js"
 
 export interface TerminalOptions {
   cols?: number
@@ -51,8 +53,8 @@ const PALETTE_256: string[] = (() => {
 })()
 
 export class HeadlessTerminal {
-  private xterm: Terminal
-  private serialize: SerializeAddon
+  private xterm: InstanceType<typeof Terminal>
+  private serialize: InstanceType<typeof SerializeAddon>
   private pty: PtyProcess | null = null
   private _exited = false
   private _exitCode: number | null = null

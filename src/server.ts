@@ -1,9 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod"
-import { HeadlessTerminal } from "./terminal"
-import { renderToPng } from "./renderer"
-import { sleep } from "./runtime"
+import { HeadlessTerminal } from "./terminal.js"
+import { renderToPng } from "./renderer.js"
+import { sleep } from "./runtime.js"
 
 // Session management: map of session IDs to terminal instances
 const sessions = new Map<string, HeadlessTerminal>()

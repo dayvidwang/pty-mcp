@@ -1,5 +1,5 @@
 import { createCanvas, GlobalFonts, type Canvas } from "@napi-rs/canvas"
-import type { CellInfo } from "./terminal"
+import type { CellInfo } from "./terminal.js"
 
 export interface RenderOptions {
   fontSize?: number
