@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod"
@@ -15,7 +16,7 @@ function getSession(id: string): HeadlessTerminal {
 }
 
 const server = new McpServer({
-  name: "terminal-mcp",
+  name: "pty-mcp",
   version: "0.1.0",
 })
 
