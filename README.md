@@ -1,8 +1,16 @@
-# terminal-mcp
+# pty-mcp
 
 An MCP server that provides headless terminal emulation. Spawn interactive terminal sessions, send keystrokes, and capture screenshots — all programmatically via the [Model Context Protocol](https://modelcontextprotocol.io).
 
 Built for AI agents that need to interact with TUI applications, run commands in a real PTY, and visually inspect terminal output.
+
+<p align="center">
+  <img src="assets/claude-code.png" width="720" alt="Claude Code running in a headless terminal" />
+</p>
+
+<p align="center">
+  <img src="assets/nvim.png" width="720" alt="Neovim with syntax highlighting" />
+</p>
 
 ## How it works
 
@@ -27,34 +35,44 @@ Programs see a real terminal (colors, cursor movement, alternate screen, mouse s
 | `terminal_kill` | Kill a session and clean up |
 | `terminal_list` | List all active sessions |
 
-## Setup
+## Install
 
-Requires [Bun](https://bun.sh).
+Requires [Bun](https://bun.sh) (v1.0+).
 
 ```bash
-bun install
+bunx pty-mcp
+```
+
+Or install globally:
+
+```bash
+bun install -g pty-mcp
 ```
 
 ## Usage
 
-### As an MCP server
+### MCP client configuration
 
-```bash
-bun src/server.ts
-```
-
-The server communicates over stdio. Configure it in your MCP client:
+Add to your MCP client config (e.g. Claude Desktop, Cursor, etc.):
 
 ```json
 {
   "mcpServers": {
     "terminal": {
-      "command": "bun",
-      "args": ["src/server.ts"],
-      "cwd": "/path/to/terminal-mcp"
+      "command": "bunx",
+      "args": ["pty-mcp"]
     }
   }
 }
+```
+
+### Development
+
+```bash
+git clone https://github.com/youruser/terminal-mcp
+cd terminal-mcp
+bun install
+bun run dev
 ```
 
 ### Example interaction
